@@ -6,11 +6,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 import { LoggerService } from '@/common/helpers/logger.helper';
+import { MailModule } from '@/mail/mail.module';
 
 @Module({
   imports: [
     JwtModule.register({}),
-    DatabaseModule
+    DatabaseModule,
+    MailModule
   ],
   controllers: [AuthController],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy, LoggerService]

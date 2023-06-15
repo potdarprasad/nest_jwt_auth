@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { encodePassword, isPasswordValid } from '@/common/helpers';
 import { LoggerService } from '@/common/helpers/logger.helper';
+import { MailService } from '@/mail/mail.service';
+import * as otpGenerator from 'otp-generator';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +15,7 @@ export class AuthService {
         private jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly logger: LoggerService,
+        private readonly mailService: MailService
     ) { }
 
     async signUp(input: SignUpDto) {
@@ -24,7 +27,13 @@ export class AuthService {
         const password = await encodePassword(input.password);
 
         const newUser = this.userRepository.create({ ...input, password });
+        const otp = this.generateNumericOtp();
+        await this.mailService.sendOtp(input, otp);
         return this.userRepository.save(newUser);
+    }
+
+    generateNumericOtp(){
+        return otpGenerator.generate(4, {specialChars: false, upperCaseAlphabets: false, lowerCaseAlphabets: false, digit: true});
     }
 
     async signIn(input: SignInDto) {
@@ -87,7 +96,7 @@ export class AuthService {
                 },
                 {
                     secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-                    expiresIn: '15m',
+                    expiresIn: '1m',
                 },
             ),
             this.jwtService.signAsync(

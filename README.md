@@ -163,7 +163,40 @@ For this project refer `database.module.ts` for entity creation and use and also
 ```json
   yarn add @nestjs/jwt @nestjs/passport passport-jwt passport
   yarn add -D @types/passport-jwt @types/node
-  yarn add bacrypt
+  yarn add bcrypt
 ```
+
+Follow Reference Document Steps To Implement JWT Auth
+
+----
+## 6.Mailer Configuration
+[Reference Document](https://notiz.dev/blog/send-emails-with-nestjs)
+
+### Steps
+#### 6.1: Add following dependencies
+```json 
+yarn add @nestjs-modules/mailer nodemailer handlebars
+yarn add @types/nodemailer -D //(dev dependency)
+yarn add otp-generator //[optional]: used to generate OTP
+```
+
+#### 6.2: 
+##### 6.2.1: Create mail module and service
+```json    
+nest g module mail
+nest g service mail
+```
+##### 6.2.2: Create template folder inside mail module folder and create .hbs file for template 
+  
+
+#### 6.3: Add following compiler options to nest-cli.json
+```json  
+  "compilerOptions": {
+    "assets": [{ "include": "mail/templates/**/*", "outDir": "dist/" }],
+    "watchAssets": true
+  }
+```
+
+#### 6.4 Import mail module in module where you want to use and make use of send mail service to send emails
 
 ----
